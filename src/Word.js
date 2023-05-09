@@ -1,4 +1,4 @@
-import { WORD_LOAD_PERIOD, WORD_SIZE, SEA_LEVEL, DROP_RATE } from "./Constants";
+import { VEL_EFFECT, EFFECT_DURATION, WORD_SIZE, SEA_LEVEL, DROP_RATE } from "./Constants";
 import randomWords from 'random-words';
 
 // const textInput = document.getElementById('textInput');
@@ -8,12 +8,13 @@ import randomWords from 'random-words';
 // }
 
 class Word {
-    constructor(content, x, y, velocity) {
+    constructor(content, x, y, velocity, color) {
         this.content = content;
         this.visible = true;
         this.x = x;
         this.y = y;
         this.velocity = velocity;
+        this.color = color;
     }
 
     isVisible() {
@@ -22,7 +23,7 @@ class Word {
 
     draw() {
         if(this.visible) {
-            fill(0);
+            fill(0, 0, this.color);
             textSize(WORD_SIZE);
             textAlign(CENTER);
             text(this.content, this.x, this.y);
@@ -31,7 +32,7 @@ class Word {
     }
 
     drop() {
-        this.y = this.y + DROP_RATE;
+        this.y = this.y + this.velocity;
     }
 
     inOcean() {
@@ -44,6 +45,29 @@ class Word {
         // if(con == this.content) this.visible = false;
         // draw();
     }
+
+    effect(type) {
+        let effectFunc;
+        let restoreFunc;
+        let backup = _.cloneDeep(this.content);
+        switch(type) {
+            case 1: // faster
+                effectFunc = function () {this.velocity = this.velocity*VEL_EFFECT};
+                restoreFunc = function () {this.velocity = this.velocity/VEL_EFFECT};
+                break;
+            case 2: // slower
+                effectFunc = function () {this.velocity = this.velocity/VEL_EFFECT};
+                restoreFunc = function () {this.velocity = this.velocity*VEL_EFFECT};
+                break;
+            case 3: // hide
+                const len = this.content.length;
+                effectFunc = function () {this.content = this.content.slice(-len).padStart(len, '*')};
+                restoreFunc = function () {this.content = backup};
+                break;
+            }
+        effectFunc();
+        setTimeout(() => restoreFunc(), EFFECT_DURATION);
+    }
 }
 
 class WordFactory {
@@ -55,7 +79,9 @@ class WordFactory {
     getRandomWords(words, canvX, vel) {
         // const word = new Word(randomWords(), canvX*(Math.random()), 0, vel);
         // let l = setInterval(() => words.push(new Word(randomWords(), canvX*(Math.random()), 0, vel)), period);
-        words.push(new Word(randomWords(), canvX*(Math.random()*0.8+0.1), 20, vel));
+        const colorList = [0, 0, 0, 0, 0, 1];
+        const decideColor = Math.floor(Math.random()*colorList.length);
+        words.push(new Word(randomWords(), canvX*(Math.random()*0.8+0.1), 20, vel, 255*colorList[decideColor]));
         return words;
     }
 }

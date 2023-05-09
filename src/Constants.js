@@ -1,5 +1,7 @@
-export const INIT_VELOCITY = 20;
-export const ACCELERATE_VAL = 1.2;
+export const INIT_VELOCITY = 1;
+export const VEL_EFFECT = 4;
+export const EFFECT_DURATION = 10000;
+export const ACCELERATE_VAL = 1.1;
 export const WORD_LOAD_PERIOD = 1700;
 export const WORD_DROP_PERIOD = 2000;
 export const WORD_SIZE = 20;
