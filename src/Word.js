@@ -1,11 +1,11 @@
 import { WORD_LOAD_PERIOD, WORD_SIZE, SEA_LEVEL, DROP_RATE } from "./Constants";
 import randomWords from 'random-words';
 
-const textInput = document.getElementById('textInput');
-textInput.oninput = function () {
-    const con = textInput.value;
-    // console.log(`textInput: ${con}`);
-}
+// const textInput = document.getElementById('textInput');
+// textInput.oninput = function () {
+//     const con = textInput.value;
+//     // console.log(`textInput: ${con}`);
+// }
 
 class Word {
     constructor(content, x, y, velocity) {
@@ -39,10 +39,10 @@ class Word {
     }
 
     submit() {
-        const con = textInput.value;
-        console.log(`textInput: ${con}`);
-        if(con == this.content) this.visible = false;
-        draw();
+        // const con = textInput.value;
+        // console.log(`textInput: ${con}`);
+        // if(con == this.content) this.visible = false;
+        // draw();
     }
 }
 

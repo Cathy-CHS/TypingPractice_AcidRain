@@ -7,3 +7,6 @@ export const DROP_RATE = 1;
 export const SPLASH_SIZE = 100;
 export const SPALSH_DURATION = 2000;
 export const SEA_LEVEL = 450;
+export const WORD_SCORE = 10;
+export const PLAY_LEVEL = 1;
+export const INITIAL_PH = 7.0;
