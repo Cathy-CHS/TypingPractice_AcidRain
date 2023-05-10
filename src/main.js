@@ -1,7 +1,7 @@
 import '../css/style.css';
 import { Word, WordFactory } from './Word.js';
 import { Numeric } from './Numeric.js';
-import { WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, VEL_EFFECT, EFFECT_DURATION, INITIAL_PH } from "./Constants";
+import { WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, INIT_EFFECT, SLOW_EFFECT, FAST_EFFECT, EFFECT_DURATION, INITIAL_PH } from "./Constants";
 import randomWords from 'random-words';
 // import {RWG} from 'randomwordsgenerator';
 
@@ -14,7 +14,7 @@ textInput.oninput = function () {
 let words = [];
 let num;
 let l;
-let eff = 1;
+let eff = INIT_EFFECT;
 let effectFunc = function () {};
 let restoreFunc = function () {};;
 
@@ -22,7 +22,7 @@ function setup() {
     createCanvas(800, 600);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
     l = setInterval(() => {
-        words = WordFactory.getInstance().getRandomWords(words, 800, INIT_VELOCITY*eff);
+        words = WordFactory.getInstance().getRandomWords(words, 800, INIT_VELOCITY+0.2*(num.level-1));
         // return words;
         console.log(words);
     }, WORD_LOAD_PERIOD);
@@ -52,6 +52,7 @@ function draw() {
         // while (!isEmpty(words)) 
         // words[words.length-1].draw();
         // words[0].draw();
+        console.log("eff = ", eff);
         num.draw();
         for(let word of words) {
             word.draw();
@@ -65,7 +66,7 @@ function draw() {
         }
         let d = setInterval(() => {
             for(let word of words) word.drop();
-        }, WORD_DROP_PERIOD); 
+        }, WORD_DROP_PERIOD*eff); 
         setTimeout(() => { clearInterval(d);}, WORD_DROP_PERIOD);
     }
 }
@@ -89,33 +90,35 @@ function keyPressed() {
             if(con === word.content) {
                 word.visible = false;
                 num.scoreUpdate();
-            }
-            if(word.color > 0) {
-                const decideEffect = Math.floor(Math.random()*4);
-                switch(decideEffect) {
-                    case 0:
-                        console.log("effect 0");
-                        num.ph = INITIAL_PH;
-                        break;
-                    case 1: // faster
-                        console.log("effect 1");
-                        effectFunc = function () {eff = eff*VEL_EFFECT};
-                        restoreFunc = function () {eff = eff/VEL_EFFECT};
-                        break;
-                    case 2: // slower
-                        console.log("effect 2");
-                        effectFunc = function () {eff = eff/VEL_EFFECT};
-                        restoreFunc = function () {eff = eff*VEL_EFFECT};
-                        break;
-                    case 3: // hide
-                        console.log("effect 3");
-                        // const len = this.content.length;
-                        // effectFunc = function () {this.content = this.content.slice(-len).padStart(len, '*')};
-                        // restoreFunc = function () {this.content = backup};
-                        break;
-                    }
-                effectFunc();
-                setTimeout(() => restoreFunc(), EFFECT_DURATION);
+                if(word.color > 0) {
+                    const decideEffect = Math.floor(Math.random()*4);
+                    switch(decideEffect) {
+                        case 0:
+                            console.log("effect 0");
+                            num.ph = INITIAL_PH;
+                            break;
+                        case 1: // faster
+                            console.log("effect 1");
+                            effectFunc = function () {eff = INIT_EFFECT-FAST_EFFECT};
+                            restoreFunc = function () {eff = INIT_EFFECT};
+                            break;
+                            case 2: // slower
+                            console.log("effect 2");
+                            effectFunc = function () {eff = INIT_EFFECT+SLOW_EFFECT};
+                            restoreFunc = function () {eff = INIT_EFFECT};
+                            break;
+                        case 3: // hide
+                            console.log("effect 3");
+                            // const len = this.content.length;
+                            // effectFunc = function () {this.content = this.content.slice(-len).padStart(len, '*')};
+                            // restoreFunc = function () {this.content = backup};
+                            break;
+                        }
+                    console.log("eff_before = ", eff);
+                    effectFunc();
+                    console.log("eff_start = ", eff);
+                    setTimeout(() => {restoreFunc(); console.log("eff_end = ", eff);}, EFFECT_DURATION);
+                }
             }
             draw();
             // word.draw();

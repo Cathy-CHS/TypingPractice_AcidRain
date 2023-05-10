@@ -1,4 +1,4 @@
-import { VEL_EFFECT, EFFECT_DURATION, WORD_SIZE, SEA_LEVEL, DROP_RATE } from "./Constants";
+import { EFFECT_DURATION, WORD_SIZE, SEA_LEVEL, DROP_RATE } from "./Constants";
 import randomWords from 'random-words';
 
 // const textInput = document.getElementById('textInput');
@@ -46,28 +46,28 @@ class Word {
         // draw();
     }
 
-    effect(type) {
-        let effectFunc;
-        let restoreFunc;
-        let backup = _.cloneDeep(this.content);
-        switch(type) {
-            case 1: // faster
-                effectFunc = function () {this.velocity = this.velocity*VEL_EFFECT};
-                restoreFunc = function () {this.velocity = this.velocity/VEL_EFFECT};
-                break;
-            case 2: // slower
-                effectFunc = function () {this.velocity = this.velocity/VEL_EFFECT};
-                restoreFunc = function () {this.velocity = this.velocity*VEL_EFFECT};
-                break;
-            case 3: // hide
-                const len = this.content.length;
-                effectFunc = function () {this.content = this.content.slice(-len).padStart(len, '*')};
-                restoreFunc = function () {this.content = backup};
-                break;
-            }
-        effectFunc();
-        setTimeout(() => restoreFunc(), EFFECT_DURATION);
-    }
+    // effect(type) {
+    //     let effectFunc;
+    //     let restoreFunc;
+    //     let backup = _.cloneDeep(this.content);
+    //     switch(type) {
+    //         case 1: // faster
+    //             effectFunc = function () {this.velocity = this.velocity*VEL_EFFECT};
+    //             restoreFunc = function () {this.velocity = this.velocity/VEL_EFFECT};
+    //             break;
+    //         case 2: // slower
+    //             effectFunc = function () {this.velocity = this.velocity/VEL_EFFECT};
+    //             restoreFunc = function () {this.velocity = this.velocity*VEL_EFFECT};
+    //             break;
+    //         case 3: // hide
+    //             const len = this.content.length;
+    //             effectFunc = function () {this.content = this.content.slice(-len).padStart(len, '*')};
+    //             restoreFunc = function () {this.content = backup};
+    //             break;
+    //         }
+    //     effectFunc();
+    //     setTimeout(() => restoreFunc(), EFFECT_DURATION);
+    // }
 }
 
 class WordFactory {
