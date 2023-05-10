@@ -1,7 +1,7 @@
 import '../css/style.css';
 import { Word, WordFactory } from './Word.js';
 import { Numeric } from './Numeric.js';
-import { WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, INIT_EFFECT, SLOW_EFFECT, FAST_EFFECT, EFFECT_DURATION, INITIAL_PH } from "./Constants";
+import { WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, INIT_EFFECT, SLOW_EFFECT, FAST_EFFECT, EFFECT_DURATION, WORDS_PER_LEVEL, INITIAL_PH } from "./Constants";
 
 const textInput = document.getElementById('textInput');
 textInput.oninput = function () {
@@ -9,6 +9,7 @@ textInput.oninput = function () {
 }
 
 let words = [];
+let wordCount = 0;
 let num;
 let l;
 let mask = false;
@@ -20,8 +21,11 @@ function setup() {
     createCanvas(800, 600);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
     l = setInterval(() => {
-        words = WordFactory.getInstance().getRandomWords(words, mask, 800, INIT_VELOCITY+0.2*(num.level-1));
-        console.log(words);
+        if (wordCount < WORDS_PER_LEVEL) {
+            words = WordFactory.getInstance().getRandomWords(words, mask, 800, INIT_VELOCITY+0.1*(num.level-1));
+            wordCount += 1;
+            console.log(words);
+        }
     }, WORD_LOAD_PERIOD);
 }
 
@@ -40,6 +44,7 @@ function draw() {
         fill(50*(INITIAL_PH-num.ph), 200, 255);
         noStroke();
         rect(0, 450, 800, 600-SEA_LEVEL);
+        levelUp();
         num.draw();
         for(let word of words) {
             word.draw();
@@ -74,6 +79,15 @@ function keyPressed() {
             // word.draw();
         }
         textInput.value = "";
+    }
+}
+
+function levelUp() {
+    if (wordCount === WORDS_PER_LEVEL && words.length === 0) {
+        num.levelUpdate();
+        wordCount = 0;
+        eff = INIT_EFFECT;
+        disableMask();
     }
 }
 

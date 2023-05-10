@@ -16,6 +16,10 @@ class Numeric {
         text(`Score: ${this.score}`, 20, 30);
         text(`pH: ${this.ph}`, 20, 60);
         text(`Level: ${this.level}`, 20, 90);
+        this.displayEffect();
+    }
+
+    displayEffect() {
         if(this.display === 0) text("pH Recover", 20, 120);
         if(this.display === 1) text("Fastly", 20, 120);
         if(this.display === 2) text("Slowly", 20, 120);
@@ -23,7 +27,7 @@ class Numeric {
     }
 
     scoreUpdate() {
-        this.score += WORD_SCORE;
+        this.score += WORD_SCORE*this.level;
     }
 
     levelUpdate() {
