@@ -2,18 +2,16 @@ import '../css/style.css';
 import { Word, WordFactory } from './Word.js';
 import { Numeric } from './Numeric.js';
 import { WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, INIT_EFFECT, SLOW_EFFECT, FAST_EFFECT, EFFECT_DURATION, INITIAL_PH } from "./Constants";
-import randomWords from 'random-words';
-// import {RWG} from 'randomwordsgenerator';
 
 const textInput = document.getElementById('textInput');
 textInput.oninput = function () {
     const con = textInput.value;
-    // console.log(`textInput: ${con}`);
 }
 
 let words = [];
 let num;
 let l;
+let mask = false;
 let eff = INIT_EFFECT;
 let effectFunc = function () {};
 let restoreFunc = function () {};;
@@ -22,16 +20,13 @@ function setup() {
     createCanvas(800, 600);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
     l = setInterval(() => {
-        words = WordFactory.getInstance().getRandomWords(words, 800, INIT_VELOCITY+0.2*(num.level-1));
-        // return words;
+        words = WordFactory.getInstance().getRandomWords(words, mask, 800, INIT_VELOCITY+0.2*(num.level-1));
         console.log(words);
     }, WORD_LOAD_PERIOD);
-    // 1. Init backgrounds and numeric display
 }
 
 function draw() {
     background('eeeeee');
-    // let randomWords = require('random-words');
     if(num.gameOver()) {
         textSize(100);
         fill(255, 0, 0);
@@ -45,14 +40,6 @@ function draw() {
         fill(50*(INITIAL_PH-num.ph), 200, 255);
         noStroke();
         rect(0, 450, 800, 600-SEA_LEVEL);
-        // const word = randomWords();
-        // console.log(word);
-        // let rwg = new RWG();
-        // console.log(rwg.GetWords());
-        // while (!isEmpty(words)) 
-        // words[words.length-1].draw();
-        // words[0].draw();
-        console.log("eff = ", eff);
         num.draw();
         for(let word of words) {
             word.draw();
@@ -61,7 +48,7 @@ function draw() {
             if(!word.isVisible()) {
                 const index = words.indexOf(word);
                 if (index >= 0) words.splice(index, 1);
-                console.log(word.content);
+                console.log(`word out: ${word.content}`);
             }
         }
         let d = setInterval(() => {
@@ -71,60 +58,70 @@ function draw() {
     }
 }
 
-// const textInput = document.getElementById('textInput');
-// textInput.oninput = function () {
-//     const con = textInput.value;
-//     // console.log(`textInput: ${con}`);
-// }
-
 function keyPressed() {
     // enter or spacebar - submit the typed word
     if (key === ' ' || keyCode == 13) {
-        // const con = textInput.value;
-        // console.log(`textInput: ${con}`);
-        // textInput.value = "";
+        const con = textInput.value;
+        console.log(`textInput: ${con}`);
         for(let word of words) {
-            // word.submit();
-            const con = textInput.value;
-            console.log(`textInput: ${con}`);
             if(con === word.content) {
                 word.visible = false;
                 num.scoreUpdate();
-                if(word.color > 0) {
-                    const decideEffect = Math.floor(Math.random()*4);
-                    switch(decideEffect) {
-                        case 0:
-                            console.log("effect 0");
-                            num.ph = INITIAL_PH;
-                            break;
-                        case 1: // faster
-                            console.log("effect 1");
-                            effectFunc = function () {eff = INIT_EFFECT-FAST_EFFECT};
-                            restoreFunc = function () {eff = INIT_EFFECT};
-                            break;
-                            case 2: // slower
-                            console.log("effect 2");
-                            effectFunc = function () {eff = INIT_EFFECT+SLOW_EFFECT};
-                            restoreFunc = function () {eff = INIT_EFFECT};
-                            break;
-                        case 3: // hide
-                            console.log("effect 3");
-                            // const len = this.content.length;
-                            // effectFunc = function () {this.content = this.content.slice(-len).padStart(len, '*')};
-                            // restoreFunc = function () {this.content = backup};
-                            break;
-                        }
-                    console.log("eff_before = ", eff);
-                    effectFunc();
-                    console.log("eff_start = ", eff);
-                    setTimeout(() => {restoreFunc(); console.log("eff_end = ", eff);}, EFFECT_DURATION);
-                }
+                if(mask) disableMask();
+                if(word.color > 0) wordEffect();
             }
             draw();
             // word.draw();
         }
         textInput.value = "";
     }
+}
+
+function disableMask() {
+    num.display = -1;
+    mask = false;
+    for(let w of words) w.hide = false;
+}
+
+function wordEffect() {
+    const decideEffect = Math.floor(Math.random()*4);
+    num.display = decideEffect;
+    switch(decideEffect) {
+        case 0:
+            console.log("effect 0");
+            effectFunc = function () {num.ph = INITIAL_PH};
+            restoreFunc = function () {eff = INIT_EFFECT};
+            break;
+        case 1: // faster
+            console.log("effect 1");
+            effectFunc = function () {eff = INIT_EFFECT-FAST_EFFECT};
+            restoreFunc = function () { 
+                num.display = -1;
+                eff = INIT_EFFECT;
+            };
+            break;
+            case 2: // slower
+            console.log("effect 2");
+            effectFunc = function () {eff = INIT_EFFECT+SLOW_EFFECT};
+            restoreFunc = function () {
+                num.display = -1;
+                eff = INIT_EFFECT;
+            };
+            break;
+        case 3: // hide
+            console.log("effect 3");
+            effectFunc = function () {
+                mask = true;
+                for(let w of words) w.hide = true;
+            };
+            restoreFunc = function () {
+                disableMask();
+                eff = INIT_EFFECT;
+            };
+            break;
+        }
+    effectFunc();
+    setTimeout(() => restoreFunc(), EFFECT_DURATION);
 }
 
 // how can we automatically set cursor

@@ -6,6 +6,7 @@ class Numeric {
         this.level = level;
         this.ph = ph;
         this.threshold = 25;
+        this.display = -1;
     }
 
     draw() {
@@ -15,6 +16,10 @@ class Numeric {
         text(`Score: ${this.score}`, 20, 30);
         text(`pH: ${this.ph}`, 20, 60);
         text(`Level: ${this.level}`, 20, 90);
+        if(this.display === 0) text("pH Recover", 20, 120);
+        if(this.display === 1) text("Fastly", 20, 120);
+        if(this.display === 2) text("Slowly", 20, 120);
+        if(this.display === 3) text("Hide Word", 20, 120);
     }
 
     scoreUpdate() {
