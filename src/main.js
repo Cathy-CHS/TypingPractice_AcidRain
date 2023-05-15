@@ -1,13 +1,16 @@
 import '../css/style.css';
+import { Sky, Sea } from './Background.js';
 import { Word, WordFactory } from './Word.js';
 import { Numeric } from './Numeric.js';
-import { WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, INIT_EFFECT, SLOW_EFFECT, FAST_EFFECT, EFFECT_DURATION, WORDS_PER_LEVEL, INITIAL_PH } from "./Constants";
+import { CANVSIZ_X, CANVSIZ_Y, WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, INIT_EFFECT, SLOW_EFFECT, FAST_EFFECT, EFFECT_DURATION, ACCELERATE_VAL, WORDS_PER_LEVEL, INITIAL_PH } from "./Constants";
 
 const textInput = document.getElementById('textInput');
 textInput.oninput = function () {
     const con = textInput.value;
 }
 
+let sky;
+let sea;
 let words = [];
 let wordCount = 0;
 let num;
@@ -18,15 +21,17 @@ let effectFunc = function () {};
 let restoreFunc = function () {};;
 
 function setup() {
-    createCanvas(800, 600);
+    createCanvas(CANVSIZ_X, CANVSIZ_Y);
+    sky = new Sky(CANVSIZ_X, CANVSIZ_Y);
+    sea = new Sea(CANVSIZ_X, CANVSIZ_Y);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
     l = setInterval(() => {
         if (wordCount < WORDS_PER_LEVEL) {
-            words = WordFactory.getInstance().getRandomWords(words, mask, 800, INIT_VELOCITY+0.1*(num.level-1));
+            words = WordFactory.getInstance().getRandomWords(words, mask, 800, INIT_VELOCITY+ACCELERATE_VAL*(num.level-1));
             wordCount += 1;
             console.log(words);
         }
-    }, WORD_LOAD_PERIOD);
+    }, WORD_LOAD_PERIOD-ACCELERATE_VAL*7000*(num.level-1)); // need to be fixed
 }
 
 function draw() {
@@ -38,14 +43,17 @@ function draw() {
         text("GAME OVER", 400, 300);
         clearInterval(l);
     } else {
-        fill(180, 255, 255);
-        noStroke();
-        rect(0, 0, 800, SEA_LEVEL);
-        fill(50*(INITIAL_PH-num.ph), 200, 255);
-        noStroke();
-        rect(0, 450, 800, 600-SEA_LEVEL);
+        sky.draw();
+        sea.draw();
+        // fill(180, 255, 255);
+        // noStroke();
+        // rect(0, 0, 800, SEA_LEVEL);
+        // fill(50*(INITIAL_PH-num.ph), 200, 255);
+        // noStroke();
+        // rect(0, 450, 800, 600-SEA_LEVEL);
         levelUp();
         num.draw();
+        sky.weather = num.changeWeather();
         for(let word of words) {
             word.draw();
             if(word.y >= SEA_LEVEL) num.phUpdate();

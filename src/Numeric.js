@@ -38,6 +38,12 @@ class Numeric {
         this.ph = parseFloat(this.ph-0.3).toFixed(1);
     }
 
+    changeWeather() {
+        if(this.level >= 7) return 2;
+        else if(this.level >= 4) return 1;
+        else return 0;
+    }
+
     gameOver() {
         return (this.ph <= 1.0);
     }
