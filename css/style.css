@@ -7,3 +7,20 @@ body {
 canvas {
   display: block;
 }
+@font-face {
+  font-family: 'font';
+  src: url('../assets/nethsans.ttf');
+}
+input[type=text], select {
+  position: absolute;
+  top: 540px;
+  left: 310px;
+  width: 180px;
+  padding: 5px;
+  font-family: 'font';
+  text-align: center;
+  font-size: 20px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  /* box-sizing: border-box; */
+}

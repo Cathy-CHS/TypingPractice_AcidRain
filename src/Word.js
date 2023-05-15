@@ -1,5 +1,6 @@
 import { EFFECT_DURATION, WORD_SIZE, SEA_LEVEL, DROP_RATE } from "./Constants";
 import randomWords from 'random-words';
+import font from '../assets/nethsans.ttf';
 
 class Word {
     constructor(content, hide, x, y, velocity, color) {
@@ -10,6 +11,7 @@ class Word {
         this.y = y;
         this.velocity = velocity;
         this.color = color;
+        this.font = loadFont(font);
     }
 
     isVisible() {
@@ -18,8 +20,8 @@ class Word {
 
     draw() {
         if(this.visible) {
-            fill(0, 0, this.color);
-            textSize(WORD_SIZE);
+            fill(0, this.color/3, this.color);
+            textFont(this.font, WORD_SIZE);
             textAlign(CENTER);
             text(this.mask(), this.x, this.y);
         }
@@ -35,7 +37,7 @@ class Word {
 
     mask() {
         const len = this.content.length;
-        if(this.hide) return this.content.slice(len).padStart(len, '*');
+        if(this.hide) return this.content.slice(len).padStart(len, '?');
         else return this.content;
     }
 }
