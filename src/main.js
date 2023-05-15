@@ -37,6 +37,7 @@ function setup() {
 function draw() {
     background('eeeeee');
     if(num.gameOver()) {
+        textInput.style.display = 'none';
         textSize(100);
         fill(255, 0, 0);
         textAlign(CENTER);
@@ -45,18 +46,14 @@ function draw() {
     } else {
         sky.draw();
         sea.draw();
-        // fill(180, 255, 255);
-        // noStroke();
-        // rect(0, 0, 800, SEA_LEVEL);
-        // fill(50*(INITIAL_PH-num.ph), 200, 255);
-        // noStroke();
-        // rect(0, 450, 800, 600-SEA_LEVEL);
-        levelUp();
         num.draw();
+        levelUp();
         sky.weather = num.changeWeather();
+        sea.acidity = num.changepH();
         for(let word of words) {
             word.draw();
             if(word.y >= SEA_LEVEL) num.phUpdate();
+            sea.ph = num.ph;
             word.inOcean();
             if(!word.isVisible()) {
                 const index = words.indexOf(word);
@@ -72,8 +69,7 @@ function draw() {
 }
 
 function keyPressed() {
-    // enter or spacebar - submit the typed word
-    if (key === ' ' || keyCode == 13) {
+    if (keyCode == 13) {
         const con = textInput.value;
         console.log(`textInput: ${con}`);
         for(let word of words) {
@@ -84,7 +80,6 @@ function keyPressed() {
                 if(word.color > 0) wordEffect();
             }
             draw();
-            // word.draw();
         }
         textInput.value = "";
     }
@@ -109,10 +104,13 @@ function wordEffect() {
     const decideEffect = Math.floor(Math.random()*4);
     num.display = decideEffect;
     switch(decideEffect) {
-        case 0:
+        case 0: // pH recover
             console.log("effect 0");
             effectFunc = function () {num.ph = INITIAL_PH};
-            restoreFunc = function () {eff = INIT_EFFECT};
+            restoreFunc = function () {
+                num.display = -1;
+                eff = INIT_EFFECT;
+            };
             break;
         case 1: // faster
             console.log("effect 1");

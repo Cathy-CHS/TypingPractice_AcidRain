@@ -1,4 +1,4 @@
-import { WORD_SCORE, PLAY_LEVEL, INITIAL_PH } from "./Constants";
+import { WORD_SCORE, EFFECT_DURATION } from "./Constants";
 
 class Numeric {
     constructor(score, level, ph) {
@@ -10,20 +10,19 @@ class Numeric {
     }
 
     draw() {
-        textSize(20);
-        fill(255, 0, 0);
+        textSize(25);
+        fill(100, 100, 180);
         textAlign(LEFT);
-        text(`Score: ${this.score}`, 20, 30);
-        text(`pH: ${this.ph}`, 20, 60);
-        text(`Level: ${this.level}`, 20, 90);
+        text(`Score: ${this.score}`, 25, 45);
+        text(`Level: ${this.level}`, 25, 80);
         this.displayEffect();
     }
 
     displayEffect() {
-        if(this.display === 0) text("pH Recover", 20, 120);
-        if(this.display === 1) text("Fastly", 20, 120);
-        if(this.display === 2) text("Slowly", 20, 120);
-        if(this.display === 3) text("Hide Word", 20, 120);
+        if(this.display === 0) text("pH Recover", 25, 115);
+        if(this.display === 1) text("Fastly", 25, 115);
+        if(this.display === 2) text("Slowly", 25, 115);
+        if(this.display === 3) text("Hide Word", 25, 115);
     }
 
     scoreUpdate() {
@@ -41,6 +40,12 @@ class Numeric {
     changeWeather() {
         if(this.level >= 7) return 2;
         else if(this.level >= 4) return 1;
+        else return 0;
+    }
+
+    changepH() {
+        if(this.ph > 5) return 2;
+        else if(this.ph > 3) return 1;
         else return 0;
     }
 
