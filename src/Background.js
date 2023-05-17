@@ -17,7 +17,6 @@ class Sky {
         this.sky = loadImage(sky);
         this.sky2 = loadImage(sky2);
         this.sky3 = loadImage(sky3);
-        this.phbar = loadImage(phbar);
     }
 
     draw() {
@@ -37,9 +36,6 @@ class Sky {
                 image(this.sky3, 0, 0, this.canvX, this.canvY);
                 break;
             }
-        imageMode(CORNERS);
-        noTint();
-        image(this.phbar, this.canvX*0.73, this.canvY*0.03, this.canvX*0.96, this.canvY*0.09);
     }
 }
 
@@ -52,11 +48,15 @@ class Sea {
         this.sea = loadImage(sea);
         this.sea2 = loadImage(sea2);
         this.sea3 = loadImage(sea3);
+        this.phbar = loadImage(phbar);
         this.cursor = loadImage(cursor);
         this.font = loadFont(font);
     }
 
     draw() {
+        imageMode(CORNERS);
+        noTint();
+        image(this.phbar, this.canvX*0.73, this.canvY*0.03, this.canvX*0.96, this.canvY*0.09);
         textFont(this.font, 25);
         fill(255);
         text('PH', this.canvX*0.705, this.canvY*0.075);

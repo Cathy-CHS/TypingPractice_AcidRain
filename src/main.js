@@ -2,6 +2,7 @@ import '../css/style.css';
 import { Sky, Sea } from './Background.js';
 import { Word, WordFactory } from './Word.js';
 import { Numeric } from './Numeric.js';
+import bgm from '../assets/bgm.mp3';
 import { CANVSIZ_X, CANVSIZ_Y, WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, INIT_EFFECT, SLOW_EFFECT, FAST_EFFECT, EFFECT_DURATION, ACCELERATE_VAL, WORDS_PER_LEVEL, INITIAL_PH } from "./Constants";
 
 const textInput = document.getElementById('textInput');
@@ -18,10 +19,16 @@ let l;
 let mask = false;
 let eff = INIT_EFFECT;
 let effectFunc = function () {};
-let restoreFunc = function () {};;
+let restoreFunc = function () {};
+let music;
+
+function preload() {
+    music = loadSound(bgm);
+  }
 
 function setup() {
     createCanvas(CANVSIZ_X, CANVSIZ_Y);
+    music.loop();
     sky = new Sky(CANVSIZ_X, CANVSIZ_Y);
     sea = new Sea(CANVSIZ_X, CANVSIZ_Y);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
@@ -36,35 +43,39 @@ function setup() {
 
 function draw() {
     background('eeeeee');
+    sky.draw();
+    levelUp();
+    sky.weather = num.changeWeather();
+    sea.acidity = num.changepH();
+    for(let word of words) {
+        word.draw();
+        if(word.y >= SEA_LEVEL) num.phUpdate();
+        sea.ph = num.ph;
+        word.inOcean();
+        if(!word.isVisible()) {
+            const index = words.indexOf(word);
+            if (index >= 0) words.splice(index, 1);
+            console.log(`word out: ${word.content}`);
+        }
+    }
+    let d = setInterval(() => {
+        for(let word of words) word.drop();
+    }, WORD_DROP_PERIOD*eff); 
+    setTimeout(() => { clearInterval(d);}, WORD_DROP_PERIOD);
+    sea.draw();
+    num.draw();
     if(num.gameOver()) {
+        words = [];
+        clearInterval(l);
+        music.stop();
         textInput.style.display = 'none';
+        fill(0, 0, 0, 150);
+        // tint(255, 150);
+        rect(0, 0, CANVSIZ_X, CANVSIZ_Y); 
         textSize(100);
-        fill(255, 0, 0);
+        fill(255);
         textAlign(CENTER);
         text("GAME OVER", 400, 300);
-        clearInterval(l);
-    } else {
-        sky.draw();
-        sea.draw();
-        num.draw();
-        levelUp();
-        sky.weather = num.changeWeather();
-        sea.acidity = num.changepH();
-        for(let word of words) {
-            word.draw();
-            if(word.y >= SEA_LEVEL) num.phUpdate();
-            sea.ph = num.ph;
-            word.inOcean();
-            if(!word.isVisible()) {
-                const index = words.indexOf(word);
-                if (index >= 0) words.splice(index, 1);
-                console.log(`word out: ${word.content}`);
-            }
-        }
-        let d = setInterval(() => {
-            for(let word of words) word.drop();
-        }, WORD_DROP_PERIOD*eff); 
-        setTimeout(() => { clearInterval(d);}, WORD_DROP_PERIOD);
     }
 }
 
@@ -147,6 +158,7 @@ function wordEffect() {
 // how can we automatically set cursor
 // to the text input without using mouse?
 
+window.preload = preload;
 window.setup = setup;
 window.draw = draw;
 window.keyPressed = keyPressed;
