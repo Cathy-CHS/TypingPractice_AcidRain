@@ -57,12 +57,10 @@ class Skyeffect {
         switch(this.weather) {
             case 0:
                 imageMode(CORNER);
-                // tint(255, 150);
                 image(this.sky_effect, 0, -5, this.canvX, this.canvY);
                 break;
             case 1:
                 imageMode(CORNER);
-                // tint(255, 126);
                 image(this.sky2_effect, 0, -70, this.canvX, this.canvY);
                 break;
             case 2:
@@ -76,12 +74,36 @@ class Skyeffect {
 class Sea {
     constructor(x, y) {
         this.acidity = 2;
-        this.ph = 7.0;
         this.canvX = x;
         this.canvY = y;
         this.sea = loadImage(sea);
         this.sea2 = loadImage(sea2);
         this.sea3 = loadImage(sea3);
+    }
+
+    draw() {
+        switch(this.acidity) {
+            case 2:
+                imageMode(CORNERS);
+                image(this.sea, 0, SEA_LEVEL, this.canvX, this.canvY);
+                break;
+            case 1:
+                imageMode(CORNERS);
+                image(this.sea2, 0, SEA_LEVEL, this.canvX, this.canvY);
+                break;
+            case 0:
+                imageMode(CORNERS);
+                image(this.sea3, 0, SEA_LEVEL, this.canvX, this.canvY);
+                break;
+        }
+    }
+}
+
+class PHStatus {
+    constructor(x, y) {
+        this.ph = 7.0;
+        this.canvX = x;
+        this.canvY = y;
         this.phbar = loadImage(phbar);
         this.cursor = loadImage(cursor);
         this.font = loadFont(font);
@@ -100,21 +122,7 @@ class Sea {
         textSize(18);
         fill(70);
         text(this.ph, this.canvX*(0.96-0.23*(7-this.ph)/6), this.canvY*0.128);
-        switch(this.acidity) {
-            case 2:
-                imageMode(CORNERS);
-                image(this.sea, 0, SEA_LEVEL, this.canvX, this.canvY);
-                break;
-            case 1:
-                imageMode(CORNERS);
-                image(this.sea2, 0, SEA_LEVEL, this.canvX, this.canvY);
-                break;
-            case 0:
-                imageMode(CORNERS);
-                image(this.sea3, 0, SEA_LEVEL, this.canvX, this.canvY);
-                break;
-        }
     }
 }
 
-export { Sky, Skyeffect, Sea };
+export { Sky, Skyeffect, Sea, PHStatus };

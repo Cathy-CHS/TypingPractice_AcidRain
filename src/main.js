@@ -1,11 +1,12 @@
 import '../css/style.css';
-import { Sky, Skyeffect, Sea } from './Background.js';
+import { Sky, Skyeffect, Sea, PHStatus } from './Background.js';
 import { Word, WordFactory } from './Word.js';
 import { Numeric } from './Numeric.js';
 import bgm from '../assets/bgm.mp3';
 import { CANVSIZ_X, CANVSIZ_Y, WORD_LOAD_PERIOD, WORD_DROP_PERIOD, INIT_VELOCITY, SEA_LEVEL, PLAY_LEVEL, INIT_EFFECT, SLOW_EFFECT, FAST_EFFECT, EFFECT_DURATION, ACCELERATE_VAL, WORDS_PER_LEVEL, INITIAL_PH } from "./Constants";
 
 const textInput = document.getElementById('textInput');
+textInput.focus();
 textInput.oninput = function () {
     const con = textInput.value;
 }
@@ -13,6 +14,7 @@ textInput.oninput = function () {
 let sky;
 let skyeffect;
 let sea;
+let phstatus;
 let words = [];
 let wordCount = 0;
 let num;
@@ -33,6 +35,7 @@ function setup() {
     sky = new Sky(CANVSIZ_X, CANVSIZ_Y);
     skyeffect = new Skyeffect(CANVSIZ_X, CANVSIZ_Y);
     sea = new Sea(CANVSIZ_X, CANVSIZ_Y);
+    phstatus = new PHStatus(CANVSIZ_X, CANVSIZ_Y);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
     l = setInterval(() => {
         if (wordCount < WORDS_PER_LEVEL) {
@@ -45,15 +48,15 @@ function setup() {
 
 function draw() {
     background('eeeeee');
-    sky.draw();
     levelUp();
+    sky.draw();
     sky.weather = num.changeWeather();
     skyeffect.weather = num.changeWeather();
     sea.acidity = num.changepH();
     for(let word of words) {
         word.draw();
         if(word.y >= SEA_LEVEL) num.phUpdate();
-        sea.ph = num.ph;
+        phstatus.ph = num.ph;
         word.inOcean();
         if(!word.isVisible()) {
             const index = words.indexOf(word);
@@ -66,6 +69,7 @@ function draw() {
     }, WORD_DROP_PERIOD*eff); 
     setTimeout(() => { clearInterval(d);}, WORD_DROP_PERIOD);
     skyeffect.draw();
+    phstatus.draw();
     sea.draw();
     num.draw();
     if(num.gameOver()) {
