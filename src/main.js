@@ -1,5 +1,5 @@
 import '../css/style.css';
-import { Sky, Sea } from './Background.js';
+import { Sky, Skyeffect, Sea } from './Background.js';
 import { Word, WordFactory } from './Word.js';
 import { Numeric } from './Numeric.js';
 import bgm from '../assets/bgm.mp3';
@@ -11,6 +11,7 @@ textInput.oninput = function () {
 }
 
 let sky;
+let skyeffect;
 let sea;
 let words = [];
 let wordCount = 0;
@@ -30,6 +31,7 @@ function setup() {
     createCanvas(CANVSIZ_X, CANVSIZ_Y);
     music.loop();
     sky = new Sky(CANVSIZ_X, CANVSIZ_Y);
+    skyeffect = new Skyeffect(CANVSIZ_X, CANVSIZ_Y);
     sea = new Sea(CANVSIZ_X, CANVSIZ_Y);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
     l = setInterval(() => {
@@ -46,6 +48,7 @@ function draw() {
     sky.draw();
     levelUp();
     sky.weather = num.changeWeather();
+    skyeffect.weather = num.changeWeather();
     sea.acidity = num.changepH();
     for(let word of words) {
         word.draw();
@@ -62,6 +65,7 @@ function draw() {
         for(let word of words) word.drop();
     }, WORD_DROP_PERIOD*eff); 
     setTimeout(() => { clearInterval(d);}, WORD_DROP_PERIOD);
+    skyeffect.draw();
     sea.draw();
     num.draw();
     if(num.gameOver()) {

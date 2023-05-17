@@ -1,6 +1,9 @@
 import sky from '../assets/sky.jpg';
 import sky2 from '../assets/sky2.jpg';
 import sky3 from '../assets/sky3.jpg';
+import sky_effect from '../assets/sky_effect.png';
+import sky2_effect from '../assets/sky2_effect.png';
+import sky3_effect from '../assets/sky3_effect.png';
 import sea from '../assets/sea.jpg';
 import sea2 from '../assets/sea2.jpg';
 import sea3 from '../assets/sea3.jpg';
@@ -34,6 +37,37 @@ class Sky {
             case 2:
                 imageMode(CORNER);
                 image(this.sky3, 0, 0, this.canvX, this.canvY);
+                break;
+            }
+    }
+}
+
+class Skyeffect {
+    constructor(x, y) {
+        this.weather = 0;
+        this.canvX = x;
+        this.canvY = y;
+        this.sky_effect = loadImage(sky_effect);
+        this.sky2_effect = loadImage(sky2_effect);
+        this.sky3_effect = loadImage(sky3_effect);
+    }
+
+    draw() {
+        noTint();
+        switch(this.weather) {
+            case 0:
+                imageMode(CORNER);
+                // tint(255, 150);
+                image(this.sky_effect, 0, -5, this.canvX, this.canvY);
+                break;
+            case 1:
+                imageMode(CORNER);
+                // tint(255, 126);
+                image(this.sky2_effect, 0, -70, this.canvX, this.canvY);
+                break;
+            case 2:
+                imageMode(CORNER);
+                image(this.sky3_effect, 0, 0, this.canvX, this.canvY);
                 break;
             }
     }
@@ -83,4 +117,4 @@ class Sea {
     }
 }
 
-export { Sky, Sea };
+export { Sky, Skyeffect, Sea };
