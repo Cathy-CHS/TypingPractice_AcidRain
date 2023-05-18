@@ -7,10 +7,11 @@ import sky3_effect from '../assets/sky3_effect.png';
 import sea from '../assets/sea.jpg';
 import sea2 from '../assets/sea2.jpg';
 import sea3 from '../assets/sea3.jpg';
+import splash from '../assets/splash.png';
 import phbar from '../assets/ph.png';
 import cursor from '../assets/cursor.png';
 import font from '../assets/nethsans.ttf';
-import { SEA_LEVEL } from './Constants';
+import { SEA_LEVEL, SPALSH_DURATION } from './Constants';
 
 class Sky {
     constructor(x, y) {
@@ -99,6 +100,22 @@ class Sea {
     }
 }
 
+class Splash {
+    constructor(x) {
+        this.splash = loadImage(splash);
+        this.x = x;
+        this.visible = true;
+    }
+
+    draw() {
+        if (this.visible) {
+            imageMode(CENTER);
+            image(this.splash, this.x, SEA_LEVEL, this.splash.width/2, this.splash.height/2);
+        };
+        setTimeout(() => this.visible = false, SPALSH_DURATION);
+    }
+}
+
 class PHStatus {
     constructor(x, y) {
         this.ph = 7.0;
@@ -125,4 +142,4 @@ class PHStatus {
     }
 }
 
-export { Sky, Skyeffect, Sea, PHStatus };
+export { Sky, Skyeffect, Sea, Splash, PHStatus };

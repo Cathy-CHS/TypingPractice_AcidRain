@@ -1,5 +1,5 @@
 import '../css/style.css';
-import { Sky, Skyeffect, Sea, PHStatus } from './Background.js';
+import { Sky, Skyeffect, Sea, Splash, PHStatus } from './Background.js';
 import { Word, WordFactory } from './Word.js';
 import { Numeric } from './Numeric.js';
 import bgm from '../assets/bgm.mp3';
@@ -14,6 +14,7 @@ textInput.oninput = function () {
 let sky;
 let skyeffect;
 let sea;
+let splash;
 let phstatus;
 let words = [];
 let wordCount = 0;
@@ -35,6 +36,7 @@ function setup() {
     sky = new Sky(CANVSIZ_X, CANVSIZ_Y);
     skyeffect = new Skyeffect(CANVSIZ_X, CANVSIZ_Y);
     sea = new Sea(CANVSIZ_X, CANVSIZ_Y);
+    splash = new Splash(0);
     phstatus = new PHStatus(CANVSIZ_X, CANVSIZ_Y);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
     l = setInterval(() => {
@@ -55,7 +57,12 @@ function draw() {
     sea.acidity = num.changepH();
     for(let word of words) {
         word.draw();
-        if(word.y >= SEA_LEVEL) num.phUpdate();
+        if(word.y >= SEA_LEVEL) {
+            num.phUpdate();
+            splash.x = word.x;
+            splash.visible = true;
+            splash.draw();
+        }
         phstatus.ph = num.ph;
         word.inOcean();
         if(!word.isVisible()) {
@@ -162,9 +169,6 @@ function wordEffect() {
     effectFunc();
     setTimeout(() => restoreFunc(), EFFECT_DURATION);
 }
-
-// how can we automatically set cursor
-// to the text input without using mouse?
 
 window.preload = preload;
 window.setup = setup;
