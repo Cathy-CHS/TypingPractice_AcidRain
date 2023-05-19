@@ -8,7 +8,6 @@ export const WORD_LOAD_PERIOD = 1700;
 export const WORD_DROP_PERIOD = 2000;
 export const WORD_SIZE = 20;
 export const DROP_RATE = 1;
-export const SPLASH_SIZE = 100;
 export const SPALSH_DURATION = 30000;
 export const SEA_LEVEL = 450;
 export const WORD_SCORE = 10;

@@ -46,7 +46,7 @@ function setup() {
     phstatus = new PHStatus(CANVSIZ_X, CANVSIZ_Y);
     num = new Numeric(0, PLAY_LEVEL, INITIAL_PH);
 
-    // Load Words Periodically Into Word List
+    // Load Word Periodically Into words List
     l = setInterval(() => {
         if (wordCount < WORDS_PER_LEVEL) {
             words = WordFactory.getInstance().getRandomWords(words, mask, 800, INIT_VELOCITY+ACCELERATE_VAL*(num.level-1));
@@ -104,7 +104,7 @@ function draw() {
     sea.draw();
     num.draw();
 
-    // Draw GAME OVER layer when the game overs
+    // Draw GAME OVER layer when the game ends
     if(num.gameOver()) {
         words = [];
         clearInterval(l);
