@@ -5,7 +5,6 @@ class Numeric {
         this.score = score;
         this.level = level;
         this.ph = ph;
-        this.threshold = 25;
         this.display = -1;
     }
 
